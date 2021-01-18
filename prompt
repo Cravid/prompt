@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage="$(basename "$0") [-h|--help] <string> -- Show a prompt message with y/n requirement
+
+DESCRIPTION:
+    -h, --help	Show this help message
+
+PRIMARIES:
+    string      Prompt message to show
+"
+usage() {
+    echo "$usage"
+    exit 1
+}
+
+for option in "$@"
+do
+    case $option in
+        -h|--help) usage;;
+        -*|--*|\?) printf "illegal option: %s\n\n" "$option" >&2; usage;;
+    esac
+done
+
+if [ $# -eq 0 ]; then
+    usage
+fi
+
+##
+
+STRING=$@
+
+while true; do
+    read -p "$STRING (y/N) " yn
+    case $yn in
+        Y|y|Yes|yes ) exit 0; break;;
+        N|n|No|no   ) exit 1; break;;
+        *           ) echo "Please answer yes or no.";;
+    esac
+done
